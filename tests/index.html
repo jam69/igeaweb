@@ -1,0 +1,493 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>Page Title</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" type="text/css" media="screen" href="main.css" />
+    <link rel="stylesheet" type="text/css" media="screen" href="../node_modules/leaflet/dist/leaflet.css" />
+    <link rel="stylesheet" type="text/css" media="screen" href="../node_modules/leaflet.pm/dist/leaflet.pm.css" />
+    <script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.6.3/css/all.css" integrity="sha384-UHRtZLI+pbxtHCWp1t77Bi1L4ZtiqrqD80Kn4Z8NTSRyMA2Fd33n5dQ8lWUE00s/" crossorigin="anonymous">
+
+
+
+   
+   <style>
+        body {
+            font-size: 1em;
+            line-height: 1.4;
+            background: #b5d0d0; 
+            color: #285585;
+        }
+        
+        .map-container { 
+            width: 600px;
+            height: 400px;
+            border: 2px solid #1978cf;
+        }
+        .section {
+            border: solid 2px black ;
+        }
+        .section2 {
+            border: solid 2px black ;
+        }
+        .section div {
+            display:none; 
+        }
+        #listaResultados {
+            height: 200px;
+            overflow:hidden; overflow-y:scroll;
+            font-size:smaller;
+        }
+        #tablaResultados {
+            height: 400px;
+            overflow:hidden; overflow-y:scroll;
+            font-size:smaller;
+        }
+
+        #panelLocalizar{
+            /* display:none;  */
+        }
+        #panelLayers{
+            /* display:none;  */
+        }
+        #panelQuerys{
+            /* display:none;  */
+        }
+
+        h4 {
+            margin-left: 10px;
+            margin-top: 3px;
+            margin-bottom: 3px;
+        }
+
+        .treeLayer{
+            height: 400px;
+            overflow:hidden; overflow-y:scroll;
+            font-size:smaller;
+        }
+        .pickable {
+            border: groove ;
+            cursor: pointer;
+        }
+
+        .layerState{
+            border: groove ;
+            margin-left: 10px;
+            margin-top: 3px;
+            margin-bottom: 3px;
+            cursor: pointer;
+        }
+
+        /* trees */
+        /* Remove default bullets */
+        ul, .myTree {
+            list-style-type: none;
+        }
+
+        /* Remove margins and padding from the parent ul */
+        .myTree {
+            margin: 0;
+            padding: 0;
+        }
+
+        /* Style the caret/arrow */
+        .caret {
+            cursor: pointer; 
+            user-select: none; /* Prevent text selection */
+        }
+
+        /* Create the caret/arrow with a unicode, and style it */
+        .caret::before {
+            content: "\25B6";
+            color: black;
+            display: inline-block;
+            margin-right: 6px;
+        }
+
+        /* Rotate the caret/arrow icon when clicked on (using JavaScript) */
+        .caret-down::before {
+            transform: rotate(90deg); 
+        }
+
+        /* Hide the nested list */
+        .nested {
+            display: none;
+        }
+
+        /* Show the nested list when the user clicks on the caret/arrow (with JavaScript) */
+        .active {
+            display: block;
+        }
+
+        
+        </style>
+        
+</head>
+<body>
+
+     <!--   https://medium.com/@soffritti.pierfrancesco/create-a-simple-event-bus-in-javascript-8aa0370b3969 -->
+
+
+     <!--
+         OpenCycleMap https://tile.thunderforest.com/cycle/{z}/{x}/{y}.png?apikey=36088068a00844a6a59f23268cc901fc
+         Transport    https://tile.thunderforest.com/transport/{z}/{x}/{y}.png?apikey=36088068a00844a6a59f23268cc901fc
+         Landscape    https://tile.thunderforest.com/landscape/{z}/{x}/{y}.png?apikey=36088068a00844a6a59f23268cc901fc
+         Outdoors     https://tile.thunderforest.com/outdoors/{z}/{x}/{y}.png?apikey=36088068a00844a6a59f23268cc901fc
+         Transport Dark https://tile.thunderforest.com/transport-dark/{z}/{x}/{y}.png?apikey=36088068a00844a6a59f23268cc901fc
+         Spinal Map     https://tile.thunderforest.com/spinal-map/{z}/{x}/{y}.png?apikey=36088068a00844a6a59f23268cc901fc
+         Pioneer        https://tile.thunderforest.com/pioneer/{z}/{x}/{y}.png?apikey=36088068a00844a6a59f23268cc901fc
+         Mobile Atlas   https://tile.thunderforest.com/mobile-atlas/{z}/{x}/{y}.png?apikey=36088068a00844a6a59f23268cc901fc
+         Neighbourhood  https://tile.thunderforest.com/neighbourhood/{z}/{x}/{y}.png?apikey=36088068a00844a6a59f23268cc901fc
+        
+         http://tile.stamen.com/toner/{z}/{x}/{y}.png
+         http://tile.stamen.com/terrain/{z}/{x}/{y}.jpg
+         http://tile.stamen.com/watercolor/{z}/{x}/{y}.jpg
+        -->
+        
+    <script>
+
+        function login(){
+
+            this.MAP_ID="Map1";
+
+            let user = $('#userName').val();
+            let password = $('#userPwd').val();
+            igeaWeb.login(user,password).then ( () => {
+                // console.log("Logado");
+                igeaWeb.initMap(this.MAP_ID).then( () => {
+                    // console.log("Inicializado Mapa");
+                    igeaWeb.getCapas().then( c => {
+                        // console.log("Recibidas capas:",c);
+                        setCapasOnCombo(c);
+                        setCapasOnCombo2(c);
+                    })
+                })
+            });
+        }
+        
+        function changeLayerBase(){
+            let layer = $('#baseLayer').val();
+            igeaWeb.changeBaseLayer(layer);
+        }
+        
+        function setCapasOnCombo(data){
+            console.log("Recibidas las capas",data);
+            let combo=$('#classSelect');
+            $.each(data,function(i,cd){ // forRach classDescriptor
+                combo.append(new Option(cd.displayName,cd.classId));
+            })
+        }
+
+        function localiza(){
+            let ci=$('#classSelect').val();
+            let cm=$('#codeInput').val();
+            igeaWeb.getEntity(ci,cm).then( ent => zoomEntidad(ent));
+        }
+       
+        function zoomEntidad(ent){
+            // igeaWeb.convierteMerOld(ent['_mer'],this,center);
+            igeaWeb.convierteMer(ent['_mer']).then(r => center(r));
+        }
+
+        function center(coords){
+            igeaWeb.centerMap(coords,16);
+        }
+
+        function setCapasOnCombo2(data){
+            // console.log("Recibidas las capas",data);
+            let combo=$('#classSelect2');
+            $.each(data,function(i,cd){ // forRach classDescriptor
+                combo.append(new Option(cd.displayName,cd.classId));
+            })
+        }
+
+        function getLayers(){
+            igeaWeb.getLayers(this.MAP_ID).then( layers => showLayers(layers));
+        }
+      
+        function showLayers(data){
+            console.log("Recibidos layers");
+            this.layers=data; // salvamos los layers
+            let layersTree=document.getElementById('treeLayers');
+            $(layersTree).empty();
+            addNode(layersTree,data)
+        }
+
+        function changeLayers(){
+            console.log("Actualizamos layers");
+            igeaWeb.updateLayers(this.MAP_ID,this.layers)
+                .then( newLayers => updatedLayers(newLayers));
+        }
+
+        function updatedLayers(){
+            // refresh
+            console.log("Layers Actualizads -> refresh ");
+            igeaWeb.refresh();
+        }
+
+        function addNode(root,layer){    
+
+            delete layer.excluding;
+            delete layer.legend;
+
+            // case Nivel intermedio  layer.id .startsWith("grupo@")
+            let isGrupo=layer.id.startsWith("grupo@");
+            // case Capa  layer.id .startsWith("clase@")
+            // case Texto  layer.id .startsWith("texto@")
+            let item=document.createElement("LI");
+            let span=document.createElement("SPAN");
+            if(layer.children.length>0){
+                span.classList.add("caret");
+            }
+
+            span.appendChild(document.createTextNode(layer.name));
+
+            item.appendChild(span);
+
+            if(! isGrupo){
+                let triStateSpan=document.createElement("SPAN");
+                triStateSpan.style.color = _colorTristate(layer);
+                let triState=document.createElement("I");
+                triState.classList.add('fas');
+                triState.classList.add('fa-check'); 
+                triState.classList.add('layerState');
+                // triState.classList.add('fas fa-check-square'); // TODO
+                // triState.classList.add('fas fa-check-circle'); // TODO
+                triStateSpan.appendChild(triState);
+                triStateSpan.layer=layer;
+                triStateSpan.addEventListener("click",function(ev) {
+                    this.layer.checked= ! this.layer.checked;
+                    triStateSpan.style.color = _colorTristate(layer);
+                    console.log("Cambiar estado capa",this.layer.name,this.layer.checked);
+                    });
+                item.appendChild(triStateSpan);
+            }
+            
+            root.appendChild(item);
+            
+            span.addEventListener("click",function() {
+                    this.parentElement.querySelector(".nested").classList.toggle("active");
+                    this.classList.toggle("caret-down");
+                    });
+
+            let ul=document.createElement("UL");
+            ul.classList.add("nested");
+            item.appendChild(ul);
+            for(let c of layer.children){ 
+                addNode(ul,c);
+            }
+        }
+        function _colorTristate(layer){
+            let color='black'
+            if(layer.indeterminated && layer.checked){  // parcialmente visible/oculto
+                color='red'
+            }
+            if(layer.indeterminated && !layer.checked){
+                color='green'
+            }
+            if(!layer.indeterminated && layer.checked){  // todo oculto
+                color='blue'
+            }
+            if(!layer.indeterminated && !layer.checked){  // todo visible
+                color='yellow'
+            }
+            return color;
+        }
+
+        function queryAttributes(){
+            let ci=$('#classSelect2').val();
+            igeaWeb.queryAttributes(ci).then( attrs=> fillAttributes(attrs));
+        }
+        function fillAttributes(data){
+            // console.log("Recibidos attributos: ",data);
+            let combo=$('#listaAtributos');
+            $.each(data,function(i,attr){ // forRach classDescriptor
+                combo.append(new Option(attr.displayName,attr.name));
+            })
+        }
+        function listEntities(){
+            let ci=$('#classSelect2').val();
+            let sql=$('#conditionInput').val();
+            let decode=$('#decodeInput').is(':checked'); 
+            igeaWeb.queryEntities(ci,sql,decode).then( ents=>fillList(ents));
+        }
+        function fillList(data){
+            // console.log("Recibidos datos: ",data);
+            let lista=$('#listaResultados');
+            lista.empty();
+            $.each(data,function(i,rec){ // forRach classDescriptor
+                lista.append('<li>'+rec['_key']+'   '+rec['_desc']+'</li>');
+            })
+
+            createTable('tablaResultados',data)
+        }
+
+        function pickEntidad(){
+            igeaWeb.pickEntidad(this.MAP_ID).then( ent =>_entidadSeleccionada(ent));
+        }
+
+        function _entidadSeleccionada(entidad){
+            console.log("Pickada ",entidad);
+            if(entidad){
+                igeaWeb.setMarkerEntidad(entidad);
+            }else{
+                igeaWeb.removeMarker();
+            }
+        }
+
+        function digitalizePoint(){
+            igeaWeb.digitalizePoint();
+        }
+
+        function digitalizeLine(){
+            igeaWeb.digitalizeLine();
+        }
+
+        function digitalizeSurface(){
+            igeaWeb.digitalizeSurface();
+        }
+
+        function edit(){
+            igeaWeb.edicion();
+        }
+        function createTable(elementId,data) {
+            let myTableDiv = document.getElementById(elementId);
+            $(myTableDiv).empty();
+
+            let table = document.createElement('TABLE');
+            table.border = '1';
+
+            let rec=data[0];
+
+            let tableHeader = document.createElement('TBODY');
+            table.appendChild(tableHeader);
+            // let tableHeader = document.createElement('THEADER');
+            // table.appendChild(tableHeader);
+            let tr = document.createElement('TR');
+            tableHeader.appendChild(tr);
+            
+            for (let j in rec ) {
+                    if(j.startsWith("_")) continue;
+                    let th = document.createElement('TH');
+                    // th.width = '75';
+                    th.appendChild(document.createTextNode(j));
+                    tr.appendChild(th);
+            }
+
+            // let tableBody = document.createElement('TBODY');
+            // table.appendChild(tableBody);
+            let tableBody = tableHeader ;
+
+            for (let i = 0; i < data.length ; i++) {
+                let tr = document.createElement('TR');
+                tableBody.appendChild(tr);
+                let rec=data[i];
+
+                for (let j in rec) {
+                    if(j.startsWith("_")) continue;
+                    let td = document.createElement('TD');
+                    // td.width = '75';
+                    td.appendChild(document.createTextNode(rec[j]));
+                    tr.appendChild(td);
+                }
+            }
+            myTableDiv.appendChild(table);
+        }
+
+
+         
+        
+
+
+    </script>
+    <h1>Prueba</h1>
+   
+    <div id="mapa" class="map-container"></div>
+
+    <div class="section2">
+        <h4>Login</h4>
+        <div>
+            <button onClick="login()">Login</button>
+            <input type="text" id="userName" />
+            <input type="password" id="userPwd" />
+        </div>
+    </div>
+
+    <div  class="section" id="panelBaseLayer">
+        <h4><i class="fa fa-caret-down" aria-hidden="true" onclick="{ $('#panelBaseLayer div').toggle()}"></i>Layer Base</h4>
+        <div>
+        <span>Layer Base:</span>
+        <select name="baseLayer" id="baseLayer" size="1" onChange="changeLayerBase()">
+             <option value="osm">OpenStreetMap</option>
+             <option value="otile">MapQuest</option>
+             <option value="ignTopo">IGN Topo</option>
+             <option value="ignPhoto">IGN Photo</option>
+             <option value="trafficHere">Here Maps Traffic</option>
+             <option value="basicHere">Here Maps Basic</option>
+             <option value="none">Ninguno</option>
+         </select> 
+         </div>
+    </div>
+
+    <div class="section" id="panelLocalizar">
+        <h4><i class="fa fa-caret-down" aria-hidden="true" onclick="{ $('#panelLocalizar div').toggle()}"></i>Localizar</h4>
+        <div>
+            <span>Localizar</span>
+            <select name="clase" id="classSelect"></select>
+            <input type="text" id="codeInput" value="20000007" />
+            <button onClick="localiza()">Localizar</button>
+        </div>
+    </div>
+    
+    <div class="section" id="panelLayers">
+        <h4><i class="fa fa-caret-down" aria-hidden="true" onclick="{ $('#panelLayers div').toggle()}"></i>Arbol de capas</h4>
+        <div >
+            <span onClick="getLayers()" class="pickable">Layers</span>
+            <span onClick="changeLayers()" class="pickable">Refresh</span>
+            <div class="treeLayer">
+            <div id="treeLayers" class='myTree'></div>
+            </div>
+        </div>
+    </div>
+
+    <div class="section" id="panelQuerys">
+        <h4><i class="fa fa-caret-down" aria-hidden="true" onclick="{ $('#panelQuerys div').toggle()}"></i>Querys</h4>
+        <div>
+            <span>Query</span>
+            <select name="clase" id="classSelect2" onClick="queryAttributes()"></select>
+            <span> Decode:<input type="checkbox" id="decodeInput" value="true"></span>
+            <input type="text" id="conditionInput" value="codigo = 20000007" />
+            <button onClick="listEntities()">Lista resultados</button>
+            <select id='listaAtributos' class='listaAtributos' size="15" multiple></select>
+            <ul id='listaResultados'></ul>
+    
+            <div id='tablaResultados'></div>
+            <!--  <button onClick="highliht()">Resaltar</button>
+            <button onClick="createFilter()">Crear Filtro</button>
+            <button onClick="listEntities2()">Lista resultados detallada</button>
+          -->
+        </div>
+    </div>
+
+    <div class="section" id="panelEdicion">
+        <h4><i class="fa fa-caret-down" aria-hidden="true" onclick="{ $('#panelEdicion div').toggle()}"></i>Edicion</h4>
+        <div>
+            <button onClick="edit()">Edicion</button>
+    
+            <button onClick="pickEntidad()">PickPoint</button>
+            <button onClick="digitalizePoint()">Dig. Nodo</button>
+            <button onClick="digitalizeLine()">Dig. Linea</button>
+            <button onClick="digitalizeSurface()">Dig. Super</button>
+
+            <button onClick="igeaWeb.createLogPane()">AddControl</button>
+            <button onClick="igeaWeb.hideLogPane()">HideControl</button>
+        </div>
+    </div>
+
+
+    
+</body>
+</html> 

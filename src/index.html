@@ -1,0 +1,128 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>IGEA Application</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    
+    <link rel="stylesheet" 
+        href="https://stackpath.bootstrapcdn.com/bootstrap/4.2.1/css/bootstrap.min.css" 
+        integrity="sha384-GJzZqFGwb1QTTN6wy59ffF1BuGJpLSa9DkKMp0DgiMDm4iYMj70gZWKYbI706tWS" 
+        crossorigin="anonymous"> 
+    <link rel="stylesheet" 
+        href="https://use.fontawesome.com/releases/v5.6.3/css/all.css" 
+        integrity="sha384-UHRtZLI+pbxtHCWp1t77Bi1L4ZtiqrqD80Kn4Z8NTSRyMA2Fd33n5dQ8lWUE00s/" 
+        crossorigin="anonymous">
+
+    <link rel="stylesheet" type="text/css" media="screen" href="../node_modules/leaflet/dist/leaflet.css" />
+    <link rel="stylesheet" type="text/css" media="screen" href="../node_modules/leaflet.pm/dist/leaflet.pm.css" />
+    <link rel="stylesheet" type="text/css" media="screen" href="css/bootstrap.min.css" />
+    <link rel="stylesheet" type="text/css" media="screen" href="main.css" />
+    
+
+    <script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
+    
+     <script 
+        src="https://code.jquery.com/jquery-3.3.1.slim.min.js" 
+        integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" 
+        crossorigin="anonymous">
+    </script> 
+     <script 
+        src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.6/umd/popper.min.js" 
+        integrity="sha384-wHAiFfRlMFy6i5SRaxvfOCifBUQy1xHdJ/yoi7FRNXMRBu5WHdZYu1hA6ZOblgut" 
+        crossorigin="anonymous">
+    </script>  
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.2.1/js/bootstrap.min.js" 
+        integrity="sha384-B0UglyR+jN6CkvvICOB2joaf5I4l3gm9GU6Hc1og6Ls7i6U/mkkaduKaBhlAXv9k" 
+        crossorigin="anonymous">
+    </script>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/webcomponentsjs/1.0.17/webcomponents-lite.js"></script>
+    <!-- <script src="@webcomponents/webcomponentsjs/webcomponents-bundle.js"></script> -->
+
+      
+<link href="main.css" rel="stylesheet"></head>
+<body>
+
+    <script>
+         window.onload = function () { 
+            console.log("Loaded");
+            app.login('jamartinm','myPassword');
+            }
+    </script>
+       
+     <!--   https://medium.com/@soffritti.pierfrancesco/create-a-simple-event-bus-in-javascript-8aa0370b3969 --> 
+
+    <h1>Prueba</h1>
+   
+    <!-- <div id="tbar"></div>
+    <div class="section2" id="login-section">
+            <h4>Login</h4>
+            <div>
+                <button onClick="app.login($('#userName').val(),$('#userPwd').val())">Login</button>
+                <input type="text" id="userName" />
+                <input type="password" id="userPwd" />
+            </div>
+        </div>  -->
+    <div id="treeContainer" class="bg-light" >
+        <h4> IGEA Layers</h4> 
+        <button class="bg-light" onClick="app.applyChanges(event)" id="applyChangesButton">Apply Changes</button>
+        <igea-tree-layers  id="layersTree"  class='myTree'> </igea-tree-layers> 
+    </div> 
+
+    <div id="queryContainer" class="igea-modal" class="bg-light" >
+        <div class="igea-modal-content">
+        <div class="igea-modal-header">
+                <div class="igea-modal-title">
+                    <h5>Query Entities</h5>
+                </div>                
+        </div>
+        <div class="igea-modal-body">
+            <ul class="nav nav-tabs">
+                <li class="nav-item"><a href="#" class="nav-link active">Basic</a></li>
+                <li class="nav-item"><a href="#" class="nav-link">Query</a></li>
+            </ul>
+            <div>
+                <h5>Select a layer:</h5>
+                <igea-layer-selector2 id="queryLayerSelector"></igea-layer-selector2>
+            </div>
+            <div id="tab-basic">
+                <div>Fill any field</div>
+                <igea-basic-search id="basicSearch"></igea-basic-search>
+            </div>
+            <div id="tab-query">
+                <div>Write a valid sql Query</div>
+                <igea-query-search></igea-query-search>
+            </div>
+        </div>
+        <div class="igea-modal-footer">
+            <button type="button" class="btn btn-secondary" onClick="app.doSelect()">Select</button>
+            <button type="button" class="btn btn-secondary" >List</button>
+            <button type="button" class="btn btn-secondary" >Table</button>
+            <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+        </div>
+    </div>
+    </div> 
+       
+    <igea-modal2 id="modalResults"></igea-modal2>
+      
+    <igea-modal2 id="modalResults"></igea-modal2>
+    
+    <div id="mapa" class="map-container"></div>
+
+    <div id="alert-component">  </div>
+
+  
+
+    <!--<div id="exampleModalCont"></div>
+    <div id="exampleNavCont"></div>
+
+    <igea-modal id='miModal' dialogId='miModal2' title='Un titulo largo'>
+        <h2> Resultados </h2>
+        <igea-simple-table id='tablaResultados2' ></igea-simple-table>
+    </igea-modal> -->
+
+   
+</body>
+</html> 

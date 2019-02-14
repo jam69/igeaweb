@@ -1,0 +1,208 @@
+/*
+ CSS Styles
+*/
+
+
+.map-container { 
+    width: 1200px;
+    height:800px;
+    border: 2px solid #1978cf;
+}
+.section {
+    border: solid 2px black ;
+}
+.section2 {
+    border: solid 2px black ;
+}
+.section div {
+    display:none; 
+}
+#listaResultados {
+    height: 200px;
+    overflow:hidden; overflow-y:scroll;
+    font-size:smaller;
+}
+
+igea-simple-table {
+    height: 400px;
+    overflow:hidden; overflow-y:scroll;
+    font-size:smaller;
+}
+
+#panelLocalizar{
+    /* display:none;  */
+}
+#panelLayers{
+    /* display:none;  */
+}
+#panelQuerys{
+    /* display:none;  */
+}
+
+h4 {
+    margin-left: 10px;
+    margin-top: 3px;
+    margin-bottom: 3px;
+}
+
+.pickable {
+    border: groove ;
+    cursor: pointer;
+}
+
+
+.modal-max-height{
+    max-height: 800px;
+    overflow-y: scroll;
+}
+
+.igea-modal {
+    position: absolute;
+    top: 180px;
+    left: 20px;
+    width: 850px;
+    max-height: 600px;
+    max-width: 900px;
+    overflow-y: auto;
+    overflow-x: hidden;
+    z-index: 1000;
+    border: solid 1px black;
+    opacity: 0.95;
+    background-color: #e9ecef;
+    font-size: 12px;
+    border-radius: 10px;
+    padding: 10px;
+    display:none;
+}
+
+.igea-modal-content{
+
+}
+
+.igea-modal-header{
+
+}
+
+.igea-modal-body{
+
+}
+
+.igea-modal-footer{
+    
+}
+
+
+/* ================  LAYER-TREE ==================== */
+
+button:disabled:hover  {
+    background-color: #e9ecef!important;
+    color: white!important;
+}
+button:disabled  {
+    background-color: #e9ecef!important;
+    color: white!important;
+}
+
+
+#treeContainer {
+    position: absolute;
+    top: 180px;
+    left: 20px;
+    width: 350px;
+    max-height: 600px;
+    max-width: 600px;
+    overflow-y: auto;
+    overflow-x: hidden;
+    z-index: 1000;
+    border: solid 1px black;
+    opacity: 0.95;
+    font-size: 12px;
+    border-radius: 10px;
+    padding: 10px;
+    display:none;
+}
+
+
+/* trees */
+/* Remove default bullets */
+ul, .myTree {
+    list-style-type: none;
+    padding-inline-start: 15px;
+}
+
+/* Remove margins and padding from the parent ul */
+.myTree {
+    margin: 0;
+    padding: 0;
+    padding-inline-start: 10px;
+}
+
+
+.treeLayer{
+    height: 400px;
+    overflow:hidden; overflow-y:scroll;
+    font-size:smaller;
+}
+
+/* Style the caret/arrow */
+.caret {
+    cursor: pointer; 
+    user-select: none; /* Prevent text selection */
+}
+
+.nocaret {
+    padding-left: 16px;
+}
+
+/* Create the caret/arrow with a unicode, and style it */
+/* Check mark       ✓ &#10003;\2713
+   Heavy check mark ✔&#10004;\2714
+   Ballot X         ✗&#10007;\2717
+   Heavy ballot X   ✘&#10008;\2718 
+*/
+.caret::before {
+    content: "\25B7";
+    color: black;
+    display: inline-block;
+    margin-right: 6px;
+}
+
+/* Rotate the caret/arrow icon when clicked on (using JavaScript) */
+.caret-down::before {
+    transform: rotate(90deg); 
+}
+
+/* Hide the nested list */
+.nested {
+    display: none;
+}
+
+/* Show the nested list when the user clicks on the caret/arrow (with JavaScript) */
+.active {
+    display: block;
+}
+
+.layerState{
+    margin-left: 10px;  
+    cursor: pointer;
+}
+
+.layerState::before{
+     border: none ;
+    /* content: "\2715";  cruz fina */
+     /* content: "\2714";  Tick Verde */
+      content: "\2718";  /* cruz gruesa*/
+     margin-top: 3px;
+    margin-bottom: 3px;
+     color: white;
+}
+.marked::before{
+    color:green; 
+}
+
+.undetermined::before{
+    background-color: gray
+}
+
+
+
