@@ -1,11 +1,11 @@
 import { Igeaweb } from "@jamartinm/jsapi/src/IgeaWeb";
 import {LayersTree, AttributeDescriptor,Entity} from "@jamartinm/jsapi/src/APIClasses";
-import { IgeaSimpleTable } from "./IgeaSimpleTable";
-import { Toolbar } from "../../node_modules/@jamartinm/jsapi/src/Toolbar";
-import { IgeaBasicSearch } from "./IgeaBasicSearch";
+import { IgeaSimpleTable } from "@jamartinm/jsapi/src/IgeaSimpleTable";
+import { Toolbar } from "@jamartinm/jsapi/src/Toolbar";
+// import { IgeaBasicSearch } from "@jamartinm/jsapi/IgeaBasicSearch";
 
 /**
- * Application Demo IGEA-Web
+ * Application Demo IGEA-Web 
  * 
  * 
         // vars:

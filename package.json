@@ -32,7 +32,6 @@
     "leaflet-draw": "^1.0.4",
     "leaflet.gridlayer.googlemutant": "^0.6.4",
     "leaflet.pm": "0.22.0",
-    "moustache": "0.0.2",
     "osmbuildings": "^0.2.0-b"
   },
   "devDependencies": {
