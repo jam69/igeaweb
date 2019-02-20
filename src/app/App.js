@@ -1,8 +1,15 @@
-import { Igeaweb } from "@jamartinm/jsapi/src/IgeaWeb";
+
+
+// import {IgeaTreeLayers,IgeaBasicSearch,Entity,IgeaSimpleTable,IgeaWeb,Toolbar} from '@jamartinm/jsapi/dist/scripts.js';
+
+import { IgeaWeb } from "@jamartinm/jsapi/src/IgeaWeb";
+import { Toolbar } from "@jamartinm/jsapi/src/Toolbar";
+
 import {LayersTree, AttributeDescriptor,Entity} from "@jamartinm/jsapi/src/APIClasses";
 import { IgeaSimpleTable } from "@jamartinm/jsapi/src/IgeaSimpleTable";
-import { Toolbar } from "@jamartinm/jsapi/src/Toolbar";
-// import { IgeaBasicSearch } from "@jamartinm/jsapi/IgeaBasicSearch";
+import { IgeaBasicSearch } from "@jamartinm/jsapi/src/IgeaBasicSearch";
+
+
 
 /**
  * Application Demo IGEA-Web 
@@ -18,7 +25,7 @@ import { Toolbar } from "@jamartinm/jsapi/src/Toolbar";
  export class App {
 
     constructor(config){
-        this.igeaWeb=new Igeaweb(config);
+        this.igeaWeb=new IgeaWeb(config);
     }
 
     login(user, password){
@@ -225,19 +232,20 @@ import { Toolbar } from "@jamartinm/jsapi/src/Toolbar";
         let classId=layerSelector.val;
         let basicSearch=document.getElementById('basicSearch');
         let cond=basicSearch.queryCondition;
-        this.igeaWeb.queryEntities(classId,cond,true).then( r =>{
-            console.log("Resultados",r);
-            let table=new IgeaSimpleTable();
-            table.entities=r;
-            let modal=document.getElementById('modalResults');
-            modal.title='Query '+layerSelector.selectedLayer.displayName;
-            modal._modalBody.appendChild(table);  // todo remove lo anterior
-            // this._showModal('modalResults')
-            modal.vis=true;
+        this.igeaWeb.queryEntities(classId,cond,true)
+            .then( r =>{
+                console.log("Resultados",r);
+                let table=new IgeaSimpleTable();
+                table.entities=r;
+                let modal=document.getElementById('modalResults');
+                modal.title='Query '+layerSelector.selectedLayer.displayName;
+                modal._modalBody.appendChild(table);  // todo remove lo anterior
+                // this._showModal('modalResults')
+                modal.vis=true;
 
-            this._hideModal('queryContainer');
-
-        });
+                this._hideModal('queryContainer');
+            }
+        );
     }
 
     _showModal(id){

@@ -24,15 +24,11 @@
   "author": "jamartinm",
   "dependencies": {
     "@babel/polyfill": "^7.2.5",
-    "@jamartinm/jsapi": "file:../IgeaWebAPINPM/jamartinm-jsapi-1.0.0.tgz",
+    "@jamartinm/jsapi": "file:../IgeaWebAPINPM/jamartinm-jsapi-1.0.4.tgz",
+    "acorn": "^6.0.0",
     "bootstrap": "^4.2.1",
     "jquery": "^3.3.1",
-    "leaflet": "1.2.0",
-    "leaflet-bing-layer": "~3.2.0",
-    "leaflet-draw": "^1.0.4",
-    "leaflet.gridlayer.googlemutant": "^0.6.4",
-    "leaflet.pm": "0.22.0",
-    "osmbuildings": "^0.2.0-b"
+    "popper.js": "^1.14.6"
   },
   "devDependencies": {
     "@babel/cli": "^7.2.3",
