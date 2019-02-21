@@ -2,12 +2,11 @@ const HtmlWebPackPlugin = require("html-webpack-plugin");
 const MiniCssExtractPlugin = require("mini-css-extract-plugin");
 const ProgressPlugin = require('webpack/lib/ProgressPlugin');
 const CopyWebpackPlugin = require('copy-webpack-plugin');
-const UglifyJsPlugin = require('uglifyjs-webpack-plugin');
 
 module.exports = {
   entry: {
     "main": [
-      "./src\\index.js"
+      "./src/index.js"
     ],
     "scripts": [
       "script-loader!./node_modules\\leaflet\\dist\\leaflet.js",
@@ -16,13 +15,7 @@ module.exports = {
       "script-loader!./node_modules\\jquery\\dist\\jquery.min.js"
     ]
   },
-  optimization: {
-    minimizer: [
-      new UglifyJsPlugin({
-        test: /\.js(\?.*)?$/i,
-      }),
-    ]
-  },
+
   module: {
     rules: [
       {

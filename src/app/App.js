@@ -1,16 +1,20 @@
 
 
-// import {IgeaTreeLayers,IgeaBasicSearch,Entity,IgeaSimpleTable,IgeaWeb,Toolbar} from '@jamartinm/jsapi/dist/scripts.js';
+import 'leaflet/dist/leaflet-src';
+import 'leaflet.pm/dist/leaflet.pm.min';
 
-import { IgeaWeb } from "@jamartinm/jsapi/src/IgeaWeb";
-import { Toolbar } from "@jamartinm/jsapi/src/Toolbar";
+import {IgeaWeb,Toolbar,IgeaSimpleTable,IgeaBasicSearch,IgeaTreeLayers} from '@jamartinm/jsapi/dist/main.js';
+import {Entity} from '@jamartinm/jsapi/dist/main.js';
+//  import {IgeaTreeLayers,IgeaBasicSearch,Entity,IgeaSimpleTable,Toolbar} from '@jamartinm/jsapi/dist/main.js';
 
-import {LayersTree, AttributeDescriptor,Entity} from "@jamartinm/jsapi/src/APIClasses";
-import { IgeaSimpleTable } from "@jamartinm/jsapi/src/IgeaSimpleTable";
-import { IgeaBasicSearch } from "@jamartinm/jsapi/src/IgeaBasicSearch";
+// import { IgeaWeb } from "@jamartinm/jsapi/src/IgeaWeb";
+// import { Toolbar } from "@jamartinm/jsapi/src/Toolbar";
+// import {LayersTree, AttributeDescriptor,Entity} from "@jamartinm/jsapi/src/APIClasses";
+// import { IgeaSimpleTable } from "@jamartinm/jsapi/src/IgeaSimpleTable";
+// import { IgeaBasicSearch } from "@jamartinm/jsapi/src/IgeaBasicSearch";
 
 
-
+ 
 /**
  * Application Demo IGEA-Web 
  * 
@@ -25,6 +29,7 @@ import { IgeaBasicSearch } from "@jamartinm/jsapi/src/IgeaBasicSearch";
  export class App {
 
     constructor(config){
+        let xx=IgeaWeb;
         this.igeaWeb=new IgeaWeb(config);
     }
 
@@ -34,7 +39,7 @@ import { IgeaBasicSearch } from "@jamartinm/jsapi/src/IgeaBasicSearch";
         
         this.igeaWeb.login(user,password)
             .then ( () => {
-                 this.igeaWeb.initMap(this.MAP_ID)
+                 this.igeaWeb.initMap(this.MAP_ID,)
                     .then( () => {
                         // console.log("Inicializado Mapa");     
                         this.igeaWeb.getCapas().then( c => {
@@ -103,8 +108,9 @@ import { IgeaBasicSearch } from "@jamartinm/jsapi/src/IgeaBasicSearch";
             .then(
                 e => {
                     console.log(" picastes ",e);
-                    if(e instanceof Entity){
-                        this.igeaWeb.placeEntityMarker(e);
+                    // if(e.hasOwnProperty('_ci')){
+                    if('_ci' in e){
+                        this.igeaWeb.placeEntityMarker(e,0);
                     }
                 })
             .catch(error=> this.alertError("Not Found any entity"))
