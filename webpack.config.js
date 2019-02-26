@@ -5,7 +5,7 @@ const CopyWebpackPlugin = require('copy-webpack-plugin');
 
 module.exports = {
   entry: {
-    "main": [
+     "main": [
       "./src/index.js"
     ],
     "scripts": [
@@ -15,7 +15,6 @@ module.exports = {
       "script-loader!./node_modules\\jquery\\dist\\jquery.min.js"
     ]
   },
-
   module: {
     rules: [
       {
@@ -36,7 +35,7 @@ module.exports = {
       },
       {
         test: /\.css$/,
-        use: [MiniCssExtractPlugin.loader, "css-loader"]
+        use: [MiniCssExtractPlugin.loader,"css-loader"]
       }
     ]
   },

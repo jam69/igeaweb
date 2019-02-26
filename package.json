@@ -28,6 +28,8 @@
     "acorn": "^6.0.0",
     "bootstrap": "^4.2.1",
     "jquery": "^3.3.1",
+    "leaflet": "^1.4.0",
+    "leaflet.pm": "^2.0.2",
     "popper.js": "^1.14.6"
   },
   "devDependencies": {

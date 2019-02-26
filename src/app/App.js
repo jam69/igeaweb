@@ -4,15 +4,7 @@ import 'leaflet/dist/leaflet-src';
 import 'leaflet.pm/dist/leaflet.pm.min';
 
 import {IgeaWeb,Toolbar,IgeaSimpleTable,IgeaBasicSearch,IgeaTreeLayers} from '@jamartinm/jsapi/dist/main.js';
-import {Entity} from '@jamartinm/jsapi/dist/main.js';
-//  import {IgeaTreeLayers,IgeaBasicSearch,Entity,IgeaSimpleTable,Toolbar} from '@jamartinm/jsapi/dist/main.js';
-
-// import { IgeaWeb } from "@jamartinm/jsapi/src/IgeaWeb";
-// import { Toolbar } from "@jamartinm/jsapi/src/Toolbar";
-// import {LayersTree, AttributeDescriptor,Entity} from "@jamartinm/jsapi/src/APIClasses";
-// import { IgeaSimpleTable } from "@jamartinm/jsapi/src/IgeaSimpleTable";
-// import { IgeaBasicSearch } from "@jamartinm/jsapi/src/IgeaBasicSearch";
-
+import {Entity,IgeaLayerSelector2} from '@jamartinm/jsapi/dist/main.js';
 
  
 /**
@@ -39,7 +31,7 @@ import {Entity} from '@jamartinm/jsapi/dist/main.js';
         
         this.igeaWeb.login(user,password)
             .then ( () => {
-                 this.igeaWeb.initMap(this.MAP_ID,)
+                 this.igeaWeb.initMap(this.MAP_ID)
                     .then( () => {
                         // console.log("Inicializado Mapa");     
                         this.igeaWeb.getCapas().then( c => {
@@ -73,7 +65,7 @@ import {Entity} from '@jamartinm/jsapi/dist/main.js';
 
         this.igeaWeb.getCategories().then( cats =>{
             let querySelector=document.getElementById('queryLayerSelector');
-            querySelector.igeaCategories=cats;
+            querySelector.igeaCategories=cats; 
         });
 
         let querySelector=document.getElementById('queryLayerSelector');
@@ -113,7 +105,7 @@ import {Entity} from '@jamartinm/jsapi/dist/main.js';
                         this.igeaWeb.placeEntityMarker(e,0);
                     }
                 })
-            .catch(error=> this.alertError("Not Found any entity"))
+            .catch(error=> this.alertError("Not Found any entity. " + error))
         );
 
         toolbar.addButtonToolbar("Pick2","/img/lupa_icono.png",
@@ -139,7 +131,7 @@ import {Entity} from '@jamartinm/jsapi/dist/main.js';
             () =>  this.igeaWeb.edicion()
         );
         toolbar.addButtonToolbar("Poly","/img/selec_area.gif",
-            () => this.igeaWeb.digitalizeSurfacePromise()
+            () => this.igeaWeb.digitalizeSurface()
                     .then( g=>{
                          console.log("Digitalizado!!!!",g);
                          this.igeaWeb.queryGraphic(this.selectedLayer,g,'intersected')
