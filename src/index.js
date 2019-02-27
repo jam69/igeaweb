@@ -3,8 +3,8 @@ import '../node_modules/@babel/polyfill';
 
 import style from "./main.css";
 
-import 'leaflet/dist/leaflet-src';
-import 'leaflet.pm/dist/leaflet.pm.min';
+// import 'leaflet/dist/leaflet-src';
+// import 'leaflet.pm/dist/leaflet.pm.min';
 // import '../node_modules/jquery/dist/jquery'
 
 

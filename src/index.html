@@ -41,8 +41,7 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/webcomponentsjs/1.0.17/webcomponents-lite.js"></script>
     <!-- <script src="@webcomponents/webcomponentsjs/webcomponents-bundle.js"></script> -->
     
-<link href="main.css" rel="stylesheet"></head>
-<!-- <script src="./igeaweb.bundle.js"></script> -->
+<!-- <link href="main.css" rel="stylesheet"></head> -->
 <body>
 
     <script>
@@ -81,21 +80,29 @@
                 </div>                
         </div>
         <div class="igea-modal-body">
-            <ul class="nav nav-tabs">
-                <li class="nav-item"><a href="#" class="nav-link active">Basic</a></li>
-                <li class="nav-item"><a href="#" class="nav-link">Query</a></li>
-            </ul>
-            <div>
+            <div >
                 <h5>Select a layer:</h5>
                 <igea-layer-selector2 id="queryLayerSelector"></igea-layer-selector2>
             </div>
-            <div id="tab-basic">
+            <ul class="nav nav-tabs">
+                <li class="nav-item">
+                    <a href="#" class="nav-link active" data-toggle="tab" role="tab" onclick="app.showTab('tab-basic')">Basic</a></li>
+                <li class="nav-item">
+                    <a href="#" class="nav-link" data-toggle="tab" role="tab" onclick="app.showTab('tab-query')">Query</a></li>
+            </ul>
+            <div class="tab-content">
+      
+            <div id="tab-basic" class="tab-pane" role="tabpanel"  aria-labelledby="basic" >
                 <div>Fill any field</div>
                 <igea-basic-search id="basicSearch"></igea-basic-search>
             </div>
-            <div id="tab-query">
+            <div id="tab-query" class="tab-pane"role="tabpanel" aria-labelledby="SQL_Query">
                 <div>Write a valid sql Query</div>
-                <igea-query-search></igea-query-search>
+                <!-- <igea-query-search></igea-query-search> -->
+                <div id='help-attribs' >   
+                </div>
+                <textarea cols=80 rows=5 id="sql-query"></textarea>
+            </div>
             </div>
         </div>
         <div class="igea-modal-footer">
@@ -109,9 +116,7 @@
        
     <igea-modal2 id="modalResults"></igea-modal2>
       
-    <igea-modal2 id="modalResults"></igea-modal2>
-    
-    <div id="mapa" class="map-container"></div>
+     <div id="mapa" class="map-container"></div>
 
     <div id="alert-component">  </div>
 

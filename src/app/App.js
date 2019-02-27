@@ -1,11 +1,6 @@
 
-
-import 'leaflet/dist/leaflet-src';
-import 'leaflet.pm/dist/leaflet.pm.min';
-
 import {IgeaWeb,Toolbar,IgeaSimpleTable,IgeaBasicSearch,IgeaTreeLayers} from '@jamartinm/jsapi/dist/main.js';
 import {Entity,IgeaLayerSelector2} from '@jamartinm/jsapi/dist/main.js';
-
  
 /**
  * Application Demo IGEA-Web 
@@ -77,7 +72,9 @@ import {Entity,IgeaLayerSelector2} from '@jamartinm/jsapi/dist/main.js';
                 this.igeaWeb.getBasicSearchFields(ci).then( fds =>{
                     let basicQuery=document.getElementById('basicSearch');
                     basicQuery.queryFields=fds;
+                    this.showTab("tab-basic");
                 });
+                this.fillHelpAttribs(ci);
             }
 
         });
@@ -124,28 +121,60 @@ import {Entity,IgeaLayerSelector2} from '@jamartinm/jsapi/dist/main.js';
         toolbar.addButtonToolbar("Clear Picks","/img/lupa_icono.png",
             () =>  this.igeaWeb.removeAllMarkers()
             );
+        toolbar.addButtonToolbar("Clear Edits","/img/lupa_icono.png",
+            () =>  this.igeaWeb.clearEdits()
+            );    
         toolbar.addButtonToolbar("Refresh","/img/zoom-refresh.png",
             () =>  this.igeaWeb.refresh()
         );
+        toolbar.addButtonToolbar("Edit2","/img/zoom-refresh.png",
+        () =>  this.igeaWeb.edicion2()
+    );
         toolbar.addButtonToolbar("Edition","/img/zoom-refresh.png",
             () =>  this.igeaWeb.edicion()
         );
         toolbar.addButtonToolbar("Poly","/img/selec_area.gif",
-            () => this.igeaWeb.digitalizeSurface()
+            () => this.igeaWeb.digitalizeArea('Poly')
                     .then( g=>{
                          console.log("Digitalizado!!!!",g);
-                         this.igeaWeb.queryGraphic(this.selectedLayer,g,'intersected')
+                         this.igeaWeb.queryGraphic(this.selectedLayer,g,'intersect')
                             .then(entities=>{
                                     console.log("Found ",entities)
                                     this.showEntities(entities);
                             });
                     })
         );
+        toolbar.addButtonToolbar("Rectangle","/img/selec_area.gif",
+            () => this.igeaWeb.digitalizeArea('Rectangle')
+                    .then( g=>{
+                         console.log("Digitalizado!!!!",g);
+                         this.igeaWeb.queryGraphic(this.selectedLayer,g,'intersect')
+                            .then(entities=>{
+                                    console.log("Found ",entities)
+                                    this.showEntities(entities);
+                            });
+                    })
+        );
+        toolbar.addButtonToolbar("Circle","/img/selec_area.gif",
+            () => this.igeaWeb.digitalizeCircle()
+                    .then( ret =>{
+                        let g=ret[0];
+                        let distance=ret[1];
+                         console.log("Digitalizado!!!!",g);
+                         this.igeaWeb.queryGraphic(this.selectedLayer,g,'within',distance)
+                            .then(entities=>{
+                                    console.log("Found ",entities)
+                                    this.showEntities(entities);
+                            });
+                    })
+        );
+                    
+        
 
         /* Adds a combo for selecting layers */
-        // toolbar.addLayerSelector( layer =>  this.selectedLayer=layer);
-        this.igeaWeb.addLayerSelector(toolbar,layer =>  this.selectedLayer=layer);
-        
+        this.igeaWeb.addLayerSelector(toolbar,
+            layer =>  this.selectedLayer=layer);
+         
 
         // dropdown  menu in toolbar example
         
@@ -230,6 +259,10 @@ import {Entity,IgeaLayerSelector2} from '@jamartinm/jsapi/dist/main.js';
         let classId=layerSelector.val;
         let basicSearch=document.getElementById('basicSearch');
         let cond=basicSearch.queryCondition;
+        if(cond==''){
+            let ta=document.getElementById('sql-query');
+            cond=ta.value;
+        }
         this.igeaWeb.queryEntities(classId,cond,true)
             .then( r =>{
                 console.log("Resultados",r);
@@ -237,10 +270,8 @@ import {Entity,IgeaLayerSelector2} from '@jamartinm/jsapi/dist/main.js';
                 table.entities=r;
                 let modal=document.getElementById('modalResults');
                 modal.title='Query '+layerSelector.selectedLayer.displayName;
-                modal._modalBody.appendChild(table);  // todo remove lo anterior
-                // this._showModal('modalResults')
+                modal.modalBody=table;  
                 modal.vis=true;
-
                 this._hideModal('queryContainer');
             }
         );
@@ -434,8 +465,41 @@ import {Entity,IgeaLayerSelector2} from '@jamartinm/jsapi/dist/main.js';
         let tablaResult=new IgeaSimpleTable();
         tablaResult.entities=ents;
 
-        let modal=document.getElementById('miModal');
-        modal.setBody(tablaResult);
+        let modal=document.getElementById('modalResults');
+        modal.title='Entities Found'
+        modal.modalBody=tablaResult;
+        modal.vis=true; 
+    }
+
+    fillHelpAttribs(classId){
+        let div=document.getElementById('help-attribs');
+        while(div.firstChild){
+			div.removeChild(div.firstChild);
+		}
+
+        let table=document.createElement("table");
+        this.igeaWeb.queryAttributes(classId).then( c =>{
+            c.forEach(ad => {
+                /* AttributeDescriptor ad */
+                let tr=document.createElement("tr");
+
+                let td=document.createElement("td");
+                td.appendChild(document.createTextNode(ad.name));
+                tr.appendChild(td);
+
+                td=document.createElement("td");
+                td.appendChild(document.createTextNode(ad.displayName));
+                tr.appendChild(td);
+
+                td=document.createElement("td");
+                td.appendChild(document.createTextNode(ad.editor));  // fieldType
+                tr.appendChild(td);
+
+                table.appendChild(tr);
+            })
+        })
+
+        div.appendChild(table);
     }
     
     /**
@@ -499,6 +563,36 @@ import {Entity,IgeaLayerSelector2} from '@jamartinm/jsapi/dist/main.js';
         let modal = document.getElementById(id);
         modal.cierrate();
     }
+
+
+    show(elementId){
+        let element=document.getElementById(elementId);
+        element.style.display='block';
+        this.className+='show';
+    }
+    hide(elementId){
+        let element=document.getElementById(elementId);
+        element.style.display='none';
+        this.className.replace(/^show$/, '');
+    }
+
+    showTab(elementId){
+        let element=document.getElementById(elementId);
+        // element.style.display='block';
+        // this.classList.add('show');
+        // get Parent
+        let p=element.parentElement;
+        for( let i=0;i< p.childElementCount;i++){
+            let panel=p.children[i];
+            if (panel.id==elementId){
+                panel.style.display='block';
+                panel.className += 'show';
+            }else{
+                panel.style.display='none';
+                panel.className.replace(/^show$/, '');
+            }
+        }
+     }
 
 /**
  * 

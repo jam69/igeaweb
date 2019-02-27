@@ -2,52 +2,31 @@
  CSS Styles
 */
 
+#help-attribs{
+    height: 150px;
+    overflow-x:hidden; 
+    overflow-y:scroll;
+    font-size:smaller;
+}
 
 .map-container { 
     width: 1200px;
     height:800px;
     border: 2px solid #1978cf;
 }
-.section {
-    border: solid 2px black ;
-}
-.section2 {
-    border: solid 2px black ;
-}
-.section div {
-    display:none; 
-}
+
 #listaResultados {
     height: 200px;
-    overflow:hidden; overflow-y:scroll;
+    overflow-x:hidden;
+    overflow-y:scroll;
     font-size:smaller;
 }
 
-igea-simple-table {
-    height: 400px;
-    overflow:hidden; overflow-y:scroll;
-    font-size:smaller;
-}
-
-#panelLocalizar{
-    /* display:none;  */
-}
-#panelLayers{
-    /* display:none;  */
-}
-#panelQuerys{
-    /* display:none;  */
-}
 
 h4 {
     margin-left: 10px;
     margin-top: 3px;
     margin-bottom: 3px;
-}
-
-.pickable {
-    border: groove ;
-    cursor: pointer;
 }
 
 
@@ -63,7 +42,7 @@ h4 {
     width: 850px;
     max-height: 600px;
     max-width: 900px;
-    overflow-y: auto;
+    overflow-y: hidden;
     overflow-x: hidden;
     z-index: 1000;
     border: solid 1px black;
@@ -80,17 +59,56 @@ h4 {
 }
 
 .igea-modal-header{
-
+    font-size: x-large;
+    font-weight: bold;
 }
 
 .igea-modal-body{
-
+    padding: 15px;
+    margin:10px;
+    align-content: center; 
+    overflow-y: auto;
+    overflow-x: hidden;
 }
+
 
 .igea-modal-footer{
     
 }
 
+/* ================  SIMPLE-TABLE ==================== */
+
+
+igea-simple-table {
+    height: 450px;
+    width: 760px;
+    display: block;
+    overflow: auto;
+}
+
+igea-simple-table table {
+    border: 2px solid black;
+    white-space: nowrap;
+}
+
+igea-simple-table table th {
+   background-color: darkslategray;
+   border: 1px solid darkgray;
+   text-align: center;
+}
+
+igea-simple-table table td {
+    border: 1px solid darkgray;
+    padding: 5px;
+    text-align: left;
+   }
+
+igea-simple-table table tr:nth-child(even) {
+    background-color:  #f2f2f2; 
+}  
+igea-simple-table table tr:nth-child(odd) {
+    background-color: lightgray;
+} 
 
 /* ================  LAYER-TREE ==================== */
 
