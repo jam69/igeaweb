@@ -1,6 +1,14 @@
 
-import {IgeaWeb,Toolbar,IgeaSimpleTable,IgeaBasicSearch,IgeaTreeLayers} from '@jamartinm/jsapi/dist/main.js';
-import {Entity,IgeaLayerSelector2} from '@jamartinm/jsapi/dist/main.js';
+import {
+    Entity,
+    IgeaWeb,
+    Toolbar,
+    IgeaLayerSelector2,
+    IgeaSimpleTable,
+    IgeaBasicSearch,
+    IgeaTreeLayers,
+    IgeaEntityDetail
+} from '@jamartinm/jsapi/dist/main.js';
  
 /**
  * Application Demo IGEA-Web 
@@ -39,8 +47,9 @@ import {Entity,IgeaLayerSelector2} from '@jamartinm/jsapi/dist/main.js';
 
     _showToolbar(){
        
-        let toolbar=new Toolbar();
+        
 
+        // first ask for layers and set LayersTree 
         this.layers={};
         this.igeaWeb.getLayers(this.MAP_ID)
             .then( data =>{
@@ -53,6 +62,7 @@ import {Entity,IgeaLayerSelector2} from '@jamartinm/jsapi/dist/main.js';
         });
 
          
+        // QuerySelector from querys panel, set layers, categories and action when change
         this.igeaWeb.getCapas().then( data =>{
             let querySelector=document.getElementById('queryLayerSelector');
             querySelector.igeaLayers=data;
@@ -68,7 +78,6 @@ import {Entity,IgeaLayerSelector2} from '@jamartinm/jsapi/dist/main.js';
            
             let ci=querySelector.val;
             if(ci){ // ignore null values
-                console.log("Ha cambiado la clase !!!!!",ci );
                 this.igeaWeb.getBasicSearchFields(ci).then( fds =>{
                     let basicQuery=document.getElementById('basicSearch');
                     basicQuery.queryFields=fds;
@@ -76,10 +85,48 @@ import {Entity,IgeaLayerSelector2} from '@jamartinm/jsapi/dist/main.js';
                 });
                 this.fillHelpAttribs(ci);
             }
-
         });
+
+        // Add locate button to results modal panel
+        let modal=document.getElementById('modalResults');
+        modal.title='Entities Found'
+        this.resultTable=new IgeaSimpleTable();
+        modal.modalBody= this.resultTable;
+        modal.addFooterButton("Locate","", ()=>{
+                let entidad= this.resultTable.selected;
+                if(entidad){
+                    this.igeaWeb.placeEntityMarker(entidad);
+                }
+        });
+        modal.addFooterButton("Detail","", ()=>{
+            let entidad= this.resultTable.selected;
+            if(entidad){
+                let modalDetail=document.getElementById('modalDetail');
+                if(entidad){
+                     detail.entity=entidad;
+                    let cd= this.igeaWeb.getLayerDescription(entidad._ci);
+                    modalDetail.title=cd.displayName
+                    modalDetail.modalBody=detail;
+                    modalDetail.open();
+                }
+            }   
+        });
+
+        // Add locate button to detail dialog
+        let modalDetail=document.getElementById('modalDetail');
+        let detail=new IgeaEntityDetail();
+        modalDetail.addFooterButton("Locate","", 
+            ()=>  {
+                let modalDetail=document.getElementById('modalDetail');
+    
+                this.igeaWeb.placeEntityMarker(detail.entity)
+            });
+                    
+                
             
         
+        //  define toolbar
+        let toolbar=new Toolbar();
 
         toolbar.addButtonToolbar("Layers","/img/lupa_icono.png",
         () =>{
@@ -96,7 +143,6 @@ import {Entity,IgeaLayerSelector2} from '@jamartinm/jsapi/dist/main.js';
         this.igeaWeb.pickEntidad()
             .then(
                 e => {
-                    console.log(" picastes ",e);
                     // if(e.hasOwnProperty('_ci')){
                     if('_ci' in e){
                         this.igeaWeb.placeEntityMarker(e,0);
@@ -118,21 +164,27 @@ import {Entity,IgeaLayerSelector2} from '@jamartinm/jsapi/dist/main.js';
                     })
                 .catch(error=> this.alertError("Not Found any entity"))
         );
+
         toolbar.addButtonToolbar("Clear Picks","/img/lupa_icono.png",
             () =>  this.igeaWeb.removeAllMarkers()
-            );
+        );
+        
         toolbar.addButtonToolbar("Clear Edits","/img/lupa_icono.png",
             () =>  this.igeaWeb.clearEdits()
-            );    
+        );    
+        
         toolbar.addButtonToolbar("Refresh","/img/zoom-refresh.png",
             () =>  this.igeaWeb.refresh()
         );
+        
         toolbar.addButtonToolbar("Edit2","/img/zoom-refresh.png",
-        () =>  this.igeaWeb.edicion2()
-    );
+            () =>  this.igeaWeb.edicion2()
+        );
+
         toolbar.addButtonToolbar("Edition","/img/zoom-refresh.png",
             () =>  this.igeaWeb.edicion()
         );
+
         toolbar.addButtonToolbar("Poly","/img/selec_area.gif",
             () => this.igeaWeb.digitalizeArea('Poly')
                     .then( g=>{
@@ -144,6 +196,7 @@ import {Entity,IgeaLayerSelector2} from '@jamartinm/jsapi/dist/main.js';
                             });
                     })
         );
+
         toolbar.addButtonToolbar("Rectangle","/img/selec_area.gif",
             () => this.igeaWeb.digitalizeArea('Rectangle')
                     .then( g=>{
@@ -155,6 +208,7 @@ import {Entity,IgeaLayerSelector2} from '@jamartinm/jsapi/dist/main.js';
                             });
                     })
         );
+
         toolbar.addButtonToolbar("Circle","/img/selec_area.gif",
             () => this.igeaWeb.digitalizeCircle()
                     .then( ret =>{
@@ -266,13 +320,8 @@ import {Entity,IgeaLayerSelector2} from '@jamartinm/jsapi/dist/main.js';
         this.igeaWeb.queryEntities(classId,cond,true)
             .then( r =>{
                 console.log("Resultados",r);
-                let table=new IgeaSimpleTable();
-                table.entities=r;
-                let modal=document.getElementById('modalResults');
-                modal.title='Query '+layerSelector.selectedLayer.displayName;
-                modal.modalBody=table;  
-                modal.vis=true;
                 this._hideModal('queryContainer');
+                this.showEntities(r);
             }
         );
     }
@@ -430,29 +479,7 @@ import {Entity,IgeaLayerSelector2} from '@jamartinm/jsapi/dist/main.js';
         
         this.igeaWeb.queryEntities(ci,sql,decode).
             then( ents=> {
-                // this.fillList(ents);
-
-                // let listaResultados=document.getElementById('listaResultados');
-                // listaResultados.data = ents;
-
-                // this.createTable('tablaResultados',ents)
-                // console.log("Metemos los resultados en la tabla")
-                // let tablaResultados=$('#tablaResultados');
-                // let tablaResultados=document.getElementById('tablaResultados');
-                
-                // tablaResultados.entities = ents;
-                // tablaResultados.conBorde=true;
-                // tablaResultados.border=0;
-                // tablaResultados.cambiaDatos(ents);
-                // tablaResultados.dataList=ents;
-                // tablaResultados.render();
-
-                // let tablaResultados2=document.getElementById('tablaResultados2');
-                
-                // tablaResultados2.entities = ents;
-                // tablaResultados2.conBorde=true;
-                // tablaResultados2.border=0;
-
+               
                 let tablaResult=new IgeaSimpleTable();
                 tablaResult.entities=ents;
 
@@ -462,12 +489,20 @@ import {Entity,IgeaLayerSelector2} from '@jamartinm/jsapi/dist/main.js';
     }
 
     showEntities(ents){
-        let tablaResult=new IgeaSimpleTable();
-        tablaResult.entities=ents;
+       
+        this.resultTable.entities=ents;
 
         let modal=document.getElementById('modalResults');
-        modal.title='Entities Found'
-        modal.modalBody=tablaResult;
+        // modal.title='Entities Found'
+        // modal.modalBody=this.resultTable;
+        // modal.addFooterButton("Locate","", ()=>{
+        //         let entidad=this.resultTable.selected;
+        //         if(entidad){
+        //             console.log("Hay que localizar ",entidad);
+        //             this.igeaWeb.placeEntityMarker(entidad);
+        //             // this.zoomEntidad(entidad);
+        //         }
+        //     })
         modal.vis=true; 
     }
 

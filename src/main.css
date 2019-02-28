@@ -71,6 +71,24 @@ h4 {
     overflow-x: hidden;
 }
 
+.igea-modal-detail {
+    position: absolute;
+    top: 180px;
+    left: 920px;
+    width: 400px;
+    max-height: 700px;
+    max-width: 500px;
+    overflow-y: auto;
+    overflow-x: hidden;
+    z-index: 1000;
+    border: solid 1px black;
+    opacity: 0.95;
+    background-color: #e9ecef;
+    font-size: 12px;
+    border-radius: 10px;
+    padding: 10px;
+    display:none;
+}
 
 .igea-modal-footer{
     
@@ -91,24 +109,43 @@ igea-simple-table table {
     white-space: nowrap;
 }
 
-igea-simple-table table th {
+igea-simple-table  th {
    background-color: darkslategray;
    border: 1px solid darkgray;
    text-align: center;
 }
 
-igea-simple-table table td {
+igea-simple-table  td {
     border: 1px solid darkgray;
     padding: 5px;
     text-align: left;
    }
 
-igea-simple-table table tr:nth-child(even) {
+igea-simple-table  tr:nth-child(even) {
     background-color:  #f2f2f2; 
 }  
-igea-simple-table table tr:nth-child(odd) {
+igea-simple-table  tr:nth-child(odd) {
     background-color: lightgray;
 } 
+
+igea-simple-table  tr.selected{
+    background-color: greenyellow !important;
+}
+
+/* ================  igea-detail  ==================== */
+
+igea-entity-detail {
+    max-height: 450px;
+    max-width: 500px;
+    overflow-y: auto;
+    overflow-x: hidden;
+    display:block;
+}
+
+igea-entity-detail th{
+    text-align: center;
+}
+
 
 /* ================  LAYER-TREE ==================== */
 
